@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: abuad
+      POSTGRES_USER: abuad_user
+      POSTGRES_PASSWORD: secretpassword
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: abuad_user
+      PGPASSWORD: secretpassword
+      PGDATABASE: abuad
+      DATABASE_URL: postgres://abuad_user:secretpassword@db:5432/abuad
+      JWT_SECRET: supersecret_jwt_for_dev
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/usr/src/app
+    # Entrypoint is provided by Dockerfile (docker-entrypoint.sh)
+
+volumes:
+  db-data:
