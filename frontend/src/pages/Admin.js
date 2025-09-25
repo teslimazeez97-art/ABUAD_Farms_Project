@@ -554,12 +554,18 @@ cursor: 'pointer'
                 </div>
                 <div>
                   <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Category</label>
-                  <input
-                    type="text"
-                    value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
-                  />
+                  <select
+  value={formData.category}
+  onChange={(e) => setFormData({...formData, category: e.target.value})}
+  required
+  style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
+>
+  <option value="">Select Category</option>
+  {categories.map(cat => (
+    <option key={cat} value={cat}>{cat}</option>
+  ))}
+</select>
+
                 </div>
                 <div>
                   <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Stock Quantity</label>
