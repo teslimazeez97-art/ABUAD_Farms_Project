@@ -240,44 +240,45 @@ export default function Admin() {
       }
     });
 
-  const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+  // Fixed categories from handbook
+const categories = ["Crops", "Livestock", "Fisheries", "Processing/Value Addition"];
 
-  return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: 20 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <h1 style={{ color: '#2f855a', margin: 0 }}>Admin Dashboard</h1>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <button
-            onClick={() => {
-              setShowAddForm(true); // always open modal for adding
-              setEditingProduct(null);
-              resetForm();
-            }}
-            style={{
-              background: '#2f855a',
-              color: 'white',
-              border: 'none',
-              padding: '10px 16px',
-              borderRadius: 8,
-              cursor: 'pointer',
-              fontWeight: 600
-            }}
-          >
-            + Add Product
-          </button>
-          <button onClick={loadProducts} style={{
-            background: '#6b7280',
-            color: 'white',
-            border: 'none',
-            padding: '10px 16px',
-            borderRadius: 8,
-            cursor: 'pointer'
-          }}>
-            🔄 Refresh
-          </button>
-        </div>
-      </div>
 
+return (
+<div style={{ maxWidth: 1200, margin: '0 auto', padding: 20 }}>
+<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+<h1 style={{ color: '#2f855a', margin: 0 }}>Admin Dashboard</h1>
+<div style={{ display: 'flex', gap: 10 }}>
+<button
+onClick={() => {
+setShowAddForm(true); // always open modal for adding
+setEditingProduct(null);
+resetForm();
+}}
+style={{
+background: '#2f855a',
+color: 'white',
+border: 'none',
+padding: '10px 16px',
+borderRadius: 8,
+cursor: 'pointer',
+fontWeight: 600
+}}
+>
++ Add Product
+</button>
+<button onClick={loadProducts} style={{
+background: '#6b7280',
+color: 'white',
+border: 'none',
+padding: '10px 16px',
+borderRadius: 8,
+cursor: 'pointer'
+}}>
+🔄 Refresh
+</button>
+</div>
+</div>
       {/* Debug Info */}
       <div style={{ background: '#f0f9ff', padding: 10, borderRadius: 8, marginBottom: 16, fontSize: 12 }}>
         <strong>Debug:</strong> API: {API} | Products: {products.length} | Filtered: {filteredProducts.length} | Selected: {selectedProducts.length} | Loading: {loading ? 'Yes' : 'No'}
