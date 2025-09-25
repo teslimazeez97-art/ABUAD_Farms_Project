@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import ProductQuickView from "../components/ProductQuickView";
-import React from "react";
+
 import API from "../config";   // ✅ should be here, not inside a function
 
 function autoImageUrl(seed, w = 600, h = 400) {
