@@ -19,7 +19,7 @@ export default function Products() {
   const { addToCart } = useCart();
 
   // ✅ FIXED: Changed from port 5000 to 5001
-const API = "http://localhost:5001";
+import API from "./config";
   useEffect(() => {
     let mounted = true;
     const load = async () => {
