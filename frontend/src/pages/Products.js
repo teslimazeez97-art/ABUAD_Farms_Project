@@ -4,10 +4,6 @@ import ProductQuickView from "../components/ProductQuickView";
 import React from "react";
 import API from "../config";   // ✅ should be here, not inside a function
 
-function Products() {
-  // ... your component logic
-}
-
 function autoImageUrl(seed, w = 600, h = 400) {
   return `https://picsum.photos/seed/abuad-${seed}/${w}/${h}`;
 }
