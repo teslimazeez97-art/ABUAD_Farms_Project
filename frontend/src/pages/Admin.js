@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const API = "http://localhost:5001";
+import API from "./config";
 export default function Admin() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
