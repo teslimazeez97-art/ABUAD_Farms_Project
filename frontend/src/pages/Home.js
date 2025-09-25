@@ -5,7 +5,7 @@ import { useCart } from "../context/CartContext";
 import { FaShoppingCart, FaStore, FaFolderOpen, FaSpinner, FaTimes, FaStar } from "react-icons/fa";
 
 // ? FIXED: Changed from port 5000 to 5001
-const API = "http://localhost:5001";
+import API from "./config";
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);
