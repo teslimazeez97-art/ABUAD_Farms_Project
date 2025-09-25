@@ -79,6 +79,7 @@ export default function Admin() {
   // Update product
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
+    if (!editingProduct) return;
     console.log('📝 Admin: Updating product:', editingProduct.id);
     
     try {
@@ -97,6 +98,7 @@ export default function Admin() {
       console.log('✅ Admin: Product updated successfully');
       resetForm();
       setEditingProduct(null);
+      setShowAddForm(false);
       loadProducts();
     } catch (err) {
       console.error('❌ Admin: Update error:', err);
@@ -189,13 +191,32 @@ export default function Admin() {
       image_url: product.image_url || ''
     });
     setEditingProduct(product);
-    setShowAddForm(false);
+    setShowAddForm(true); // open modal for editing
   };
 
   const cancelEdit = () => {
     setEditingProduct(null);
     resetForm();
+    setShowAddForm(false);
   };
+
+  // Close modal helper (used for backdrop and escape)
+  const closeModal = () => {
+    setShowAddForm(false);
+    setEditingProduct(null);
+    resetForm();
+  };
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape' && (showAddForm || editingProduct)) {
+        closeModal();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [showAddForm, editingProduct]);
 
   // Filter and sort products
   const filteredProducts = products
@@ -228,7 +249,7 @@ export default function Admin() {
         <div style={{ display: 'flex', gap: 10 }}>
           <button
             onClick={() => {
-              setShowAddForm(!showAddForm);
+              setShowAddForm(true); // always open modal for adding
               setEditingProduct(null);
               resetForm();
             }}
@@ -242,7 +263,7 @@ export default function Admin() {
               fontWeight: 600
             }}
           >
-            {showAddForm ? 'Cancel' : '+ Add Product'}
+            + Add Product
           </button>
           <button onClick={loadProducts} style={{
             background: '#6b7280',
@@ -270,7 +291,7 @@ export default function Admin() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: (showAddForm || editingProduct) ? '1fr 420px' : '1fr', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 20 }}>
         {/* Left: Products Table */}
         <div>
           {/* Filters and Controls */}
@@ -470,120 +491,151 @@ export default function Admin() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Right: Add/Edit Form */}
-        {(showAddForm || editingProduct) && (
-          <div style={{ alignSelf: 'start' }}>
-            <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 12, padding: 20 }}>
-              <h3 style={{ margin: '0 0 16px 0', color: '#2f855a' }}>
-                {editingProduct ? 'Edit Product' : 'Add New Product'}
-              </h3>
-              <form onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 16 }}>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Product Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Price (₦) *</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      required
-                      value={formData.price}
-                      onChange={(e) => setFormData({...formData, price: e.target.value})}
-                      style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Category</label>
-                    <input
-                      type="text"
-                      value={formData.category}
-                      onChange={(e) => setFormData({...formData, category: e.target.value})}
-                      style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Stock Quantity</label>
-                    <input
-                      type="number"
-                      value={formData.stock_quantity}
-                      onChange={(e) => setFormData({...formData, stock_quantity: e.target.value})}
-                      style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
-                    />
-                  </div>
-                </div>
-                <div style={{ marginTop: 16 }}>
-                  <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Description</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    rows={3}
-                    style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db', resize: 'vertical' }}
-                  />
-                </div>
-                <div style={{ marginTop: 16 }}>
-                  <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Image URL</label>
+      {/* Modal overlay for Add/Edit */}
+      {(showAddForm || editingProduct) && (
+        <div
+          onClick={(e) => {
+            // close only when clicking the backdrop (not the modal content)
+            if (e.target === e.currentTarget) closeModal();
+          }}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: 20
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            style={{
+              width: '100%',
+              maxWidth: 720,
+              background: 'white',
+              borderRadius: 12,
+              padding: 20,
+              boxShadow: '0 10px 40px rgba(2,6,23,0.4)',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }}
+          >
+            <h3 style={{ margin: '0 0 16px 0', color: '#2f855a' }}>
+              {editingProduct ? 'Edit Product' : 'Add New Product'}
+            </h3>
+            <form onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 16 }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Product Name *</label>
                   <input
-                    type="url"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                    placeholder="Leave empty for auto-generated image"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
                     style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
                   />
                 </div>
-                <div style={{ marginTop: 16 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-                    <input
-                      type="checkbox"
-                      checked={formData.featured}
-                      onChange={(e) => setFormData({...formData, featured: e.target.checked})}
-                    />
-                    <span style={{ fontWeight: 600 }}>Featured Product</span>
-                  </label>
+                <div>
+                  <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Price (₦) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={formData.price}
+                    onChange={(e) => setFormData({...formData, price: e.target.value})}
+                    style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
+                  />
                 </div>
-                <div style={{ marginTop: 20, display: 'flex', gap: 10 }}>
-                  <button
-                    type="submit"
-                    style={{
-                      background: '#2f855a',
-                      color: 'white',
-                      border: 'none',
-                      padding: '12px 20px',
-                      borderRadius: 8,
-                      cursor: 'pointer',
-                      fontWeight: 600
-                    }}
-                  >
-                    {editingProduct ? 'Update Product' : 'Add Product'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={editingProduct ? cancelEdit : () => setShowAddForm(false)}
-                    style={{
-                      background: '#6b7280',
-                      color: 'white',
-                      border: 'none',
-                      padding: '12px 20px',
-                      borderRadius: 8,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Cancel
-                  </button>
+                <div>
+                  <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Category</label>
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
+                  />
                 </div>
-              </form>
-            </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Stock Quantity</label>
+                  <input
+                    type="number"
+                    value={formData.stock_quantity}
+                    onChange={(e) => setFormData({...formData, stock_quantity: e.target.value})}
+                    style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
+                  />
+                </div>
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Description</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
+                  style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db', resize: 'vertical' }}
+                />
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>Image URL</label>
+                <input
+                  type="url"
+                  value={formData.image_url}
+                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                  placeholder="Leave empty for auto-generated image"
+                  style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #d1d5db' }}
+                />
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.featured}
+                    onChange={(e) => setFormData({...formData, featured: e.target.checked})}
+                  />
+                  <span style={{ fontWeight: 600 }}>Featured Product</span>
+                </label>
+              </div>
+              <div style={{ marginTop: 20, display: 'flex', gap: 10 }}>
+                <button
+                  type="submit"
+                  style={{
+                    background: '#2f855a',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px 20px',
+                    borderRadius: 8,
+                    cursor: 'pointer',
+                    fontWeight: 600
+                  }}
+                >
+                  {editingProduct ? 'Update Product' : 'Add Product'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (editingProduct) cancelEdit();
+                    else setShowAddForm(false);
+                  }}
+                  style={{
+                    background: '#6b7280',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px 20px',
+                    borderRadius: 8,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
