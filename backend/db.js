@@ -1,12 +1,13 @@
-import pg from "pg";
+// db.js
 import dotenv from "dotenv";
 dotenv.config();
 
-const { Pool } = pg;
+import pkg from "pg";
+const { Pool } = pkg;
 
-// Validate that DATABASE_URL is present
+// Validate DATABASE_URL
 if (!process.env.DATABASE_URL) {
-  throw new Error("Missing DATABASE_URL in environment variables");
+  throw new Error("❌ Missing DATABASE_URL in environment variables");
 }
 
 const pool = new Pool({
@@ -14,12 +15,12 @@ const pool = new Pool({
   ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
 });
 
-// Test the connection immediately
-pool.query('SELECT NOW()', (err, res) => {
+// Optional: test connection on startup
+pool.query("SELECT NOW()", (err, res) => {
   if (err) {
-    console.error('❌ Database connection test failed:', err.message);
+    console.error("❌ Database connection test failed:", err.message);
   } else {
-    console.log('✅ Database connection test successful');
+    console.log("✅ Database connection test successful:", res.rows[0].now);
   }
 });
 
