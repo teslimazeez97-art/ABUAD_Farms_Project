@@ -12,7 +12,7 @@ const Orders = () => {
   const [dirty, setDirty] = useState(false);
   const [updatingOrderIds, setUpdatingOrderIds] = useState([]);
 
-  const API = "http://localhost:5001";
+  const API = process.env.REACT_APP_API_URL;
 
   const toNum = (v) => {
     if (v === null || v === undefined) return 0;
