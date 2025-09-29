@@ -27,8 +27,10 @@
 
   "scripts": {
   "start": "node server.js",
-  "migrate": "psql $DATABASE_URL -f backend/migrations/001_create_products.sql",
-  "seed": "psql $DATABASE_URL -f backend/seeds/products_seed.sql"
+  "migrate": "node backend/migrations/20250911000001_001_create_tables.cjs && node backend/migrations/20250911000002_002_seed_admin.cjs",
+  "seed": "psql $DATABASE_URL -f backend/seed.sql"
+}
+
 },
 
   "devDependencies": {
