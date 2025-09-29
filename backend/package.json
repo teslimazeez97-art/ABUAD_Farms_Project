@@ -8,7 +8,8 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "migrate": "node-pg-migrate up",
-    "migrate:down": "node-pg-migrate down"
+    "migrate:down": "node-pg-migrate down",
+    "seed": "psql $DATABASE_URL -f backend/seed.sql"
   },
   "keywords": [],
   "author": "",
@@ -24,15 +25,6 @@
     "node-pg-migrate": "^7.6.0",
     "pg": "^8.16.3"
   },
-
-  "scripts": {
-  "start": "node server.js",
-  "migrate": "node backend/migrations/20250911000001_001_create_tables.cjs && node backend/migrations/20250911000002_002_seed_admin.cjs",
-  "seed": "psql $DATABASE_URL -f backend/seed.sql"
-}
-
-},
-
   "devDependencies": {
     "nodemon": "^3.1.10"
   }
