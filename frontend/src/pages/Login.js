@@ -9,34 +9,44 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-    try {
-      const data = await apiFetch('/api/auth/login', {
-        method: 'POST',
-        body: { email, password }
-      });
+  try {
+    const data = await apiFetch('/api/auth/login', {
+      method: 'POST',
+      body: { email, password }
+    });
 
-      if (data.success) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // Redirect based on role
-        if (data.user.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/');
-        }
+    if (data.success && data.token) {
+      // Save token in its own slot
+      localStorage.setItem('token', data.token);
+
+      // Save user + token together
+      localStorage.setItem('user', JSON.stringify({ ...data.user, token: data.token }));
+
+      // Debugging: check it worked
+      console.log('✅ Login successful, token stored:', data.token);
+
+      // Redirect based on role
+      if (data.user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
       }
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
+    } else {
+      throw new Error('Invalid login response from server');
     }
-  };
+  } catch (error) {
+    console.error('❌ Login error:', error);
+    setError(error.message || 'Login failed');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div style={{ 
