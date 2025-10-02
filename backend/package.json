@@ -5,12 +5,12 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "migrate": "node-pg-migrate up",
-    "migrate:down": "node-pg-migrate down",
-    "seed": "psql $DATABASE_URL -f backend/seed.sql"
-  },
+  "dev": "nodemon server.js",
+  "start": "node server.js",
+  "migrate": "node-pg-migrate up -m backend/migrations",
+  "migrate:down": "node-pg-migrate down -m backend/migrations",
+  "seed": "psql $DATABASE_URL -f backend/seed.sql"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
