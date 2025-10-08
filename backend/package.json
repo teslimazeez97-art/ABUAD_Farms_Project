@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js",
+    "start": "npm run migrate && node seed-handbook-products.js && node server.js",
     "build": "echo 'No build step required'",
     "migrate": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down"
