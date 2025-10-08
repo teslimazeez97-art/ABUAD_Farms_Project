@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: abuad-farms-backend
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromSecret: database_url
+      - key: JWT_SECRET
+        fromSecret: jwt_secret

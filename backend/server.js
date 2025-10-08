@@ -23,7 +23,12 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 // MIDDLEWARE
 // ============================
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3003'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3003',
+    'https://abuad-farms-project.vercel.app',
+    'https://abuad-farms-project-*.vercel.app'
+  ],
   credentials: true
 }));
 app.use(express.json({ limit: "1mb" }));
