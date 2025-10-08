@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../services/api';
 
 function autoImageUrl(seed, w = 80, h = 80) {
   return `https://picsum.photos/seed/abuad-${seed}/${w}/${h}`;
@@ -36,7 +37,7 @@ export default function Checkout() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5001/api/orders", {
+      const data = await apiFetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -45,7 +46,6 @@ export default function Checkout() {
           total: finalTotal,
         }),
       });
-      const data = await res.json();
 
       if (data.success) {
         setOrderPlaced(true);

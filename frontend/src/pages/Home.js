@@ -22,22 +22,22 @@ export default function Home() {
 
   useEffect(() => {
     async function load() {
-      console.log('?? Home: Starting to fetch data...');
+      console.log('Home: Starting to fetch data...');
       setLoading(true);
       setError("");
       
       try {
-        console.log('?? Home: Fetching featured products from API');
-        console.log('?? Home: Fetching all products from API');
+        console.log('Home: Fetching featured products from API');
+        console.log('Home: Fetching all products from API');
         
         const [featRes, prodRes] = await Promise.all([
           apiFetch('/api/products/featured'),
           apiFetch('/api/products')
         ]);
         
-        console.log('? Home: Featured products response:', featRes.length, 'products');
-        console.log('? Home: All products response:', prodRes.length, 'products');
-        console.log('?? Home: Sample featured product:', featRes[0]);
+        console.log('Home: Featured products response:', featRes.length, 'products');
+        console.log('Home: All products response:', prodRes.length, 'products');
+        console.log('Home: Sample featured product:', featRes[0]);
         
         setFeatured(Array.isArray(featRes) ? featRes : []);
         setAllProducts(Array.isArray(prodRes) ? prodRes : []);

@@ -64,13 +64,18 @@ router.post("/orders", async (req, res) => {
 router.get("/orders", async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT o.*, 
+      SELECT o.*,
              COUNT(oi.id) as item_count
       FROM orders o
       LEFT JOIN order_items oi ON o.id = oi.order_id
       GROUP BY o.id
       ORDER BY o.created_at DESC
     `);
+
+    console.log(`📊 Found ${result.rows.length} orders in database`);
+    if (result.rows.length > 0) {
+      console.log('📋 Sample order:', result.rows[0]);
+    }
 
     res.json({ success: true, orders: result.rows });
   } catch (error) {
