@@ -57,22 +57,22 @@ export default function Receipt() {
             <tr key={item.id} style={{ borderBottom: "1px solid #ddd" }}>
               <td style={td}>{item.name}</td>
               <td style={td}>{item.quantity}</td>
-              <td style={td}>₦{Number(item.price).toLocaleString()}</td>
-              <td style={td}>₦{Number(item.price * item.quantity).toLocaleString()}</td>
+              <td style={td}>NGN {Number(item.price).toLocaleString()}</td>
+              <td style={td}>NGN {Number(item.price * item.quantity).toLocaleString()}</td>
             </tr>
           ))}
           <tr>
             <td colSpan="3" style={{ ...td, textAlign: "right", fontWeight: "bold" }}>Subtotal</td>
-            <td style={td}>₦{Number(order.subtotal).toLocaleString()}</td>
+            <td style={td}>NGN {Number(order.subtotal).toLocaleString()}</td>
           </tr>
           <tr>
             <td colSpan="3" style={{ ...td, textAlign: "right", fontWeight: "bold" }}>Delivery</td>
-            <td style={td}>₦{Number(order.delivery).toLocaleString()}</td>
+            <td style={td}>NGN {Number(order.delivery).toLocaleString()}</td>
           </tr>
           <tr style={{ borderTop: "2px solid #2f855a" }}>
             <td colSpan="3" style={{ ...td, textAlign: "right", fontWeight: "bold", fontSize: 16 }}>Total</td>
             <td style={{ ...td, fontWeight: "bold", fontSize: 16, color: "#2f855a" }}>
-              ₦{Number(order.total).toLocaleString()}
+              NGN {Number(order.total).toLocaleString()}
             </td>
           </tr>
         </tbody>

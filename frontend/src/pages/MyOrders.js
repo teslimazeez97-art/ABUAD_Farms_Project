@@ -51,7 +51,7 @@ export default function MyOrders() {
   };
 
   const formatCurrency = (amount) => {
-    return `₦${Number(amount).toLocaleString()}`;
+    return `NGN ${Number(amount).toLocaleString()}`;
   };
 
   const getStatusColor = (status) => {

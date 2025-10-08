@@ -90,7 +90,7 @@ export default function ProductQuickView({ product, onClose, onAdd }) {
           </div>
 
           <div style={{ marginTop: 4, fontSize: 22, fontWeight: 800, color: "#2f855a" }}>
-            ₦{Number(product.price).toLocaleString()}
+            NGN {Number(product.price).toLocaleString()}
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>

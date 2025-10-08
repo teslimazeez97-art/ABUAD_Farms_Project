@@ -354,7 +354,7 @@ export default function Checkout() {
                 if (!loading) e.target.style.backgroundColor = '#2f855a';
               }}
             >
-              {loading ? '⏳ Processing...' : `🛒 Place Order - ₦${finalTotal.toLocaleString()}`}
+              {loading ? 'Processing...' : `Place Order - NGN ${finalTotal.toLocaleString()}`}
             </button>
           </form>
         </div>
@@ -401,11 +401,11 @@ export default function Checkout() {
                       {item.name}
                     </div>
                     <div style={{ color: '#6b7280', fontSize: 12 }}>
-                      {item.quantity} × ₦{Number(item.price).toLocaleString()}
+                      {item.quantity} × NGN {Number(item.price).toLocaleString()}
                     </div>
                   </div>
                   <div style={{ fontWeight: '700', color: '#2f855a' }}>
-                    ₦{(item.price * item.quantity).toLocaleString()}
+                    NGN {(item.price * item.quantity).toLocaleString()}
                   </div>
                 </div>
               ))}
@@ -422,7 +422,7 @@ export default function Checkout() {
                 fontSize: 16
               }}>
                 <span>Subtotal:</span>
-                <span style={{ fontWeight: '600' }}>₦{total.toLocaleString()}</span>
+                <span style={{ fontWeight: '600' }}>NGN {total.toLocaleString()}</span>
               </div>
               <div style={{ 
                 display: 'flex', 
@@ -432,7 +432,7 @@ export default function Checkout() {
               }}>
                 <span>Delivery Fee:</span>
                 <span style={{ fontWeight: '600', color: deliveryFee === 0 ? '#10b981' : '#374151' }}>
-                  {deliveryFee === 0 ? 'FREE' : `₦${deliveryFee.toLocaleString()}`}
+                  {deliveryFee === 0 ? 'FREE' : `NGN ${deliveryFee.toLocaleString()}`}
                 </span>
               </div>
               {deliveryFee === 0 && (
@@ -442,7 +442,7 @@ export default function Checkout() {
                   marginBottom: 16,
                   fontWeight: '500'
                 }}>
-                  🎉 Free delivery on orders over ₦10,000
+                  Free delivery on orders over NGN 10,000
                 </div>
               )}
               <div style={{ 
@@ -455,7 +455,7 @@ export default function Checkout() {
                 borderTop: '1px solid #e5e7eb'
               }}>
                 <span>Total:</span>
-                <span>₦{finalTotal.toLocaleString()}</span>
+                <span>NGN {finalTotal.toLocaleString()}</span>
               </div>
             </div>
           </div>

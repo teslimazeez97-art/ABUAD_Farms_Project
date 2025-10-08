@@ -59,7 +59,7 @@ export default function Featured() {
             <div style={{ padding: 10 }}>
               <h4 style={{ fontSize: 15, margin: "4px 0" }}>{p.name}</h4>
               <p style={{ margin: "4px 0", fontSize: 13, color: "#555" }}>
-                ₦{Number(p.price).toLocaleString()}
+                NGN {Number(p.price).toLocaleString()}
               </p>
             </div>
           </div>
