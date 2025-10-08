@@ -24,10 +24,10 @@ router.post("/orders", async (req, res) => {
 
     // Insert main order
     const orderResult = await client.query(
-      `INSERT INTO orders (order_number, customer_name, email, phone, address, total)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO orders (order_number, customer_name, email, phone, address, total, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, order_number, created_at`,
-      [orderNumber, customer.name, customer.email, customer.phone, customer.address, total]
+      [orderNumber, customer.name, customer.email, customer.phone, customer.address, total, 'pending']
     );
 
     const orderId = orderResult.rows[0].id;
