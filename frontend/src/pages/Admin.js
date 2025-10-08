@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AddProductModal from '../components/AddProductModal';
-
-const API = "http://localhost:5001";
+import { apiFetch } from '../services/api';
 
 export default function Admin() {
   const [products, setProducts] = useState([]);
@@ -29,9 +28,7 @@ export default function Admin() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(`${API}/api/products`);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
+      const data = await apiFetch('/api/products');
       console.log('✅ Admin: Loaded', data.length, 'products');
       setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -48,11 +45,7 @@ export default function Admin() {
     
     console.log('🗑️ Admin: Deleting product:', productId);
     try {
-      const response = await fetch(`${API}/api/products/${productId}`, {
-        method: 'DELETE'
-      });
-
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      await apiFetch(`/api/products/${productId}`, { method: 'DELETE' });
       
       console.log('✅ Admin: Product deleted successfully');
       loadProducts();
@@ -87,7 +80,7 @@ export default function Admin() {
   const toggleFeatured = async (product) => {
     console.log('⭐ Admin: Toggling featured for:', product.name);
     try {
-      const response = await fetch(`${API}/api/products/${product.id}`, {
+      await apiFetch(`/api/products/${product.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -95,8 +88,6 @@ export default function Admin() {
           is_featured: !product.is_featured
         })
       });
-
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       
       console.log('✅ Admin: Featured status updated');
       loadProducts();

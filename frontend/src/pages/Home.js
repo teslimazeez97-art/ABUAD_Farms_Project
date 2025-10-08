@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-
-// ? FIXED: Changed from port 5000 to 5001
-const API = "http://localhost:5001";
+import { apiFetch } from "../services/api";
 export default function Home() {
   const [featured, setFeatured] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
@@ -30,20 +28,20 @@ export default function Home() {
       setError("");
       
       try {
-        console.log('?? Home: Fetching featured products from:', `${API}/api/products/featured`);
-        console.log('?? Home: Fetching all products from:', `${API}/api/products`);
+        console.log('?? Home: Fetching featured products from API');
+        console.log('?? Home: Fetching all products from API');
         
         const [featRes, prodRes] = await Promise.all([
-          axios.get(`${API}/api/products/featured`),
-          axios.get(`${API}/api/products`)
+          apiFetch('/api/products/featured'),
+          apiFetch('/api/products')
         ]);
         
-        console.log('? Home: Featured products response:', featRes.status, featRes.data.length, 'products');
-        console.log('? Home: All products response:', prodRes.status, prodRes.data.length, 'products');
-        console.log('?? Home: Sample featured product:', featRes.data[0]);
+        console.log('? Home: Featured products response:', featRes.length, 'products');
+        console.log('? Home: All products response:', prodRes.length, 'products');
+        console.log('?? Home: Sample featured product:', featRes[0]);
         
-        setFeatured(Array.isArray(featRes.data) ? featRes.data : []);
-        setAllProducts(Array.isArray(prodRes.data) ? prodRes.data : []);
+        setFeatured(Array.isArray(featRes) ? featRes : []);
+        setAllProducts(Array.isArray(prodRes) ? prodRes : []);
       } catch (e) {
         console.error("? Home: Load error:", e.message);
         console.error("? Home: Full error:", e);
@@ -97,7 +95,7 @@ export default function Home() {
           Welcome to ABUAD Farms
         </h1>
         <p style={{ marginTop: 10, opacity: 0.95, fontSize: isMobile ? 14 : 16 }}>
-          Fresh produce, livestock, and farm goods — straight from our fields to your table.
+          Fresh produce, livestock, and farm goods ï¿½ straight from our fields to your table.
         </p>
         <div style={{ marginTop: 16 }}>
           <Link

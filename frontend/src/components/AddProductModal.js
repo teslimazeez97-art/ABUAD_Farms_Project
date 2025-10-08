@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-const API = "http://localhost:5001";
+import { apiFetch } from '../services/api';
 
 // Existing categories from database
 const existingCategories = [
@@ -55,7 +54,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
     try {
       const isEditing = !!editingProduct;
       const method = isEditing ? 'PUT' : 'POST';
-      const url = isEditing ? `${API}/api/products/${editingProduct.id}` : `${API}/api/products`;
+      const endpoint = isEditing ? `/api/products/${editingProduct.id}` : '/api/products';
 
       // Determine final category
       const finalCategory = formData.category === 'Other' ? customCategory : formData.category;
@@ -67,7 +66,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
         finalImageUrl = `https://picsum.photos/seed/abuad-${Date.now()}/600/400`;
       }
 
-      const response = await fetch(url, {
+      await apiFetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -78,8 +77,6 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
           image_url: finalImageUrl || `https://picsum.photos/seed/abuad-${Date.now()}/600/400`
         })
       });
-
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       console.log(`✅ Product ${isEditing ? 'updated' : 'added'} successfully`);
       resetForm();

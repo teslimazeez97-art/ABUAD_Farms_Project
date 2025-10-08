@@ -1,18 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-
-const Orders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [filter, setFilter] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [showOrderDetails, setShowOrderDetails] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [dirty, setDirty] = useState(false);
-  const [updatingOrderIds, setUpdatingOrderIds] = useState([]);
-
-  const API = "http://localhost:5001";
+import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../services/api';
 
   const toNum = (v) => {
     if (v === null || v === undefined) return 0;
@@ -24,22 +12,7 @@ const Orders = () => {
     setLoading(true);
     setError("");
     try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("No authentication token found. Please login.");
-
-      const res = await fetch(`${API}/api/orders`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        if (res.status === 401) throw new Error("Unauthorized — please login again.");
-        throw new Error(`Failed to fetch orders: ${res.status} ${res.statusText}`);
-      }
-
-      const data = await res.json();
+      const data = await apiFetch('/api/orders');
       const list = (data.success && Array.isArray(data.orders)) ? data.orders : [];
       const processed = list.map((order) => {
         const items = (order.items || []).map((it) => ({
@@ -65,7 +38,7 @@ const Orders = () => {
     } finally {
       setLoading(false);
     }
-  }, [API]);
+  }, []);
 
   useEffect(() => {
     fetchOrders();
