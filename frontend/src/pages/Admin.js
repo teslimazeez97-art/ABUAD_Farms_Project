@@ -64,7 +64,7 @@ export default function Admin() {
     try {
       await Promise.all(
         selectedProducts.map(id => 
-          fetch(`${API}/api/products/${id}`, { method: 'DELETE' })
+          apiFetch(`/api/products/${id}`, { method: 'DELETE' })
         )
       );
       console.log('✅ Admin: Bulk delete completed');
@@ -158,11 +158,6 @@ export default function Admin() {
             ?? Refresh
           </button>
         </div>
-      </div>
-
-      {/* Debug Info */}
-      <div style={{ background: '#f0f9ff', padding: 10, borderRadius: 8, marginBottom: 16, fontSize: 12 }}>
-        <strong>Debug:</strong> API: {API} | Products: {products.length} | Filtered: {filteredProducts.length} | Selected: {selectedProducts.length} | Loading: {loading ? 'Yes' : 'No'}
       </div>
 
       {/* Error Display */}

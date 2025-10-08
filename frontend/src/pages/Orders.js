@@ -1,6 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+
+const Orders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [updatingOrderIds, setUpdatingOrderIds] = useState([]);
 
   const toNum = (v) => {
     if (v === null || v === undefined) return 0;
@@ -42,7 +53,9 @@ import { apiFetch } from '../services/api';
 
   useEffect(() => {
     fetchOrders();
-  }, [fetchOrders]);  const updateOrderStatus = async (orderId, newStatus) => {
+  }, [fetchOrders]);
+
+  const updateOrderStatus = async (orderId, newStatus) => {
     if (updatingOrderIds.includes(orderId)) return;
 
     const prevOrders = [...orders];
@@ -50,25 +63,16 @@ import { apiFetch } from '../services/api';
     setUpdatingOrderIds((ids) => [...ids, orderId]);
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("No authentication token found. Please login.");
-
-      const res = await fetch(`${API}/api/orders/${orderId}`, {
+      const data = await apiFetch(`/api/orders/${orderId}`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (!res.ok) {
-        if (res.status === 401) throw new Error("Unauthorized — please login again.");
-        throw new Error(`Failed to update order: ${res.status} ${res.statusText}`);
-      }
-
-      const data = await res.json();
-      if (data.success && data.order) {
+      // Update with server response if available
+      if (data && data.success && data.order) {
         setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, ...data.order } : o)));
       }
       console.log(`Order ${orderId} updated to ${newStatus}`);
@@ -89,22 +93,9 @@ import { apiFetch } from '../services/api';
       if (!token) throw new Error("No authentication token found. Please login.");
 
       const id = order.id || order.order_number;
-      const res = await fetch(`${API}/api/orders/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const data = await apiFetch(`/api/orders/${id}`);
 
-      if (!res.ok) {
-        console.warn("Order detail fetch failed; using provided order object");
-        setSelectedOrder(order);
-        setShowOrderDetails(true);
-        setDirty(false);
-        return;
-      }
-
-      const data = await res.json();
+      // apiFetch returns data directly
       const orderData = data.success && data.order ? data.order : data;
       const items = (orderData.items || orderData.items_list || []).map((it) => ({
         ...it,
@@ -133,13 +124,9 @@ import { apiFetch } from '../services/api';
     setIsSaving(true);
     setError("");
     try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("No authentication token found. Please login.");
-
-      const res = await fetch(`${API}/api/orders/${selectedOrder.id}`, {
+      const data = await apiFetch(`/api/orders/${selectedOrder.id}`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -147,12 +134,7 @@ import { apiFetch } from '../services/api';
         }),
       });
 
-      if (!res.ok) {
-        if (res.status === 401) throw new Error("Unauthorized — please login again.");
-        throw new Error(`Failed to save order: ${res.status} ${res.statusText}`);
-      }
-
-      const data = await res.json();
+      // apiFetch returns data directly
       setOrders((prev) =>
         prev.map((o) =>
           o.id === selectedOrder.id ? { ...o, ...(data.order || { status: selectedOrder.status }) } : o
@@ -421,9 +403,6 @@ import { apiFetch } from '../services/api';
 
   return (
     <div style={{ padding: "2rem" }}>
-      <div style={{ background: "#f0f9ff", padding: 10, borderRadius: 8, marginBottom: 16, fontSize: 12 }}>
-        <strong>Debug:</strong> API: {API} | Orders: {orders.length} | Loading: {loading ? "Yes" : "No"} | Error: {error || "None"}
-      </div>
 
       {error && (
         <div style={{ background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: 12, color: "#dc2626", marginBottom: 12 }}>

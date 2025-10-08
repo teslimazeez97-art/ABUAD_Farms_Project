@@ -28,7 +28,8 @@ app.use(cors({
     'http://localhost:3003',
     'https://abuad-farms-project.vercel.app',
     'https://abuad-farms-project-*.vercel.app',
-    'https://abuad-farms-project.onrender.com'
+    'https://abuad-farms-project.onrender.com',
+    'https://abuad-farms-project-01.onrender.com'
   ],
   credentials: true
 }));

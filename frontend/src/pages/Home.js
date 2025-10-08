@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { apiFetch } from "../services/api";
@@ -75,11 +74,6 @@ export default function Home() {
 
   return (
     <div>
-      {/* Debug Info */}
-      <div style={{ background: "#f0f9ff", padding: 10, borderRadius: 8, marginBottom: 16, fontSize: 12 }}>
-        <strong>Debug:</strong> API: {API} | Featured: {featured.length} | All Products: {allProducts.length} | Categories: {categories.length} | Loading: {loading ? 'Yes' : 'No'} | Error: {error || 'None'}
-      </div>
-
       {/* Hero */}
       <section
         style={{

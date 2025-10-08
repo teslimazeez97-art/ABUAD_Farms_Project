@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { resolveImageUrl } from '../services/api';
 import { useCart } from "../context/CartContext";
 import ProductQuickView from "../components/ProductQuickView";
+import { apiFetch } from "../services/api";
 
 function autoImageUrl(seed, w = 600, h = 400) {
   return `https://picsum.photos/seed/abuad-${seed}/${w}/${h}`;
@@ -19,43 +21,25 @@ export default function Products() {
   const { addToCart } = useCart();
 
   // ✅ FIXED: Changed from port 5000 to 5001
-const API = "http://localhost:5001";
+
   useEffect(() => {
     let mounted = true;
     const load = async () => {
-      console.log('🔍 Products: Starting to fetch from:', `${API}/api/products`);
       setLoading(true);
       setError("");
       try {
-        console.log('📡 Products: Making API call...');
-        const prodRes = await fetch(`${API}/api/products`);
-        console.log('📊 Products: Response status:', prodRes.status);
-        
-        if (!prodRes.ok) throw new Error(`Products HTTP ${prodRes.status}`);
-        
-        const prodData = await prodRes.json();
-        console.log('✅ Products: Received', prodData.length, 'products');
-        console.log('📦 Products: Sample product:', prodData[0]);
-        
+        const prodData = await apiFetch('/api/products');
         if (!mounted) return;
-        setProducts(Array.isArray(prodData) ? prodData : []);
+        setProducts(Array.isArray(prodData) ? prodData.filter(p => !p.archived) : []);
 
         try {
-          console.log('🏷️ Products: Fetching categories...');
-          const catRes = await fetch(`${API}/api/categories`);
-          if (!catRes.ok) {
-            throw new Error(`Categories HTTP ${catRes.status}`);
-          }
-          const catData = await catRes.json();
-          console.log('✅ Products: Categories received:', catData);
-          
+          const catData = await apiFetch('/api/categories');
           if (mounted) {
             const normalized = Array.isArray(catData) ? catData.slice() : [];
             if (!normalized.includes("Others")) normalized.unshift("Others");
             setCategories(normalized);
           }
         } catch (catErr) {
-          console.warn("Categories endpoint missing or failed — deriving categories from products.", catErr);
           if (!mounted) return;
           const setCats = new Set();
           (prodData || []).forEach((p) => {
@@ -65,10 +49,8 @@ const API = "http://localhost:5001";
           const derived = Array.from(setCats).filter((c) => c !== "Others").sort();
           derived.unshift("Others");
           setCategories(derived);
-          console.log('🏷️ Products: Derived categories:', derived);
         }
       } catch (e) {
-        console.error("❌ Products: Fetch error:", e);
         if (mounted) setError(e.message);
       } finally {
         if (mounted) setLoading(false);
@@ -76,10 +58,8 @@ const API = "http://localhost:5001";
     };
 
     load();
-    return () => {
-      mounted = false;
-    };
-  }, [API]);
+    return () => { mounted = false; };
+  }, []);
 
   const filtered = products
     .filter((p) => (q ? p.name.toLowerCase().includes(q.toLowerCase()) : true))
@@ -95,7 +75,6 @@ const API = "http://localhost:5001";
     });
 
   const handleAddToCart = (p, qty = 1) => {
-    console.log('🛒 Products: Adding to cart:', p.name, 'qty:', qty);
     addToCart({
       id: p.id,
       name: p.name,
@@ -106,12 +85,12 @@ const API = "http://localhost:5001";
   };
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: 20 }}>
-      <h2 style={{ color: "#2f855a" }}>Products</h2>
+    <div className="product-list-wrapper">
+      <h2 style={{ color: "var(--brand-green)" }}>Products</h2>
 
       {/* Debug Info */}
       <div style={{ background: "#f0f9ff", padding: 10, borderRadius: 8, marginBottom: 16, fontSize: 12 }}>
-        <strong>Debug:</strong> API: {API} | Products: {products.length} | Filtered: {filtered.length} | Loading: {loading ? 'Yes' : 'No'} | Error: {error || 'None'}
+        <strong>Debug:</strong> Products: {products.length} | Filtered: {filtered.length} | Loading: {loading ? 'Yes' : 'No'} | Error: {error || 'None'}
       </div>
 
       <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
@@ -163,74 +142,23 @@ const API = "http://localhost:5001";
           {products.length === 0 && <p><small>Make sure your backend is running on port 5001</small></p>}
         </div>
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-            gap: 16,
-          }}
-        >
+        <div className="products-grid">
           {filtered.map((p) => {
-            const img = (p.image_url && p.image_url.trim()) || autoImageUrl(p.id, 600, 400);
+            const img = resolveImageUrl(p.image_url) || autoImageUrl(p.id, 600, 400);
             return (
-              <div
-                key={p.id}
-                style={{
-                  background: "#fff",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 10,
-                  overflow: "hidden",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <button
-                  aria-label={`Quick view ${p.name}`}
-                  onClick={() => setQuickViewProduct(p)}
-                  style={{
-                    border: "none",
-                    padding: 0,
-                    margin: 0,
-                    background: "transparent",
-                    width: "100%",
-                    height: 180,
-                    cursor: "pointer",
-                  }}
-                >
-                  <img
-                    src={img}
-                    alt={p.name}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    onError={(e) => (e.currentTarget.src = autoImageUrl(p.id, 600, 400))}
-                  />
+              <div key={p.id} className="product-card">
+                <button aria-label={`Quick view ${p.name}`} onClick={() => setQuickViewProduct(p)} className="product-image-btn">
+                  <img src={img} alt={p.name} onError={(e) => (e.currentTarget.src = autoImageUrl(p.id, 600, 400))} />
                 </button>
 
-                <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-                  <div style={{ fontWeight: 700, color: "#111827" }}>{p.name}</div>
-                  <div style={{ fontSize: 13, color: "#6b7280" }}>{p.category || "General"}</div>
-                  <div style={{ marginTop: 4, fontSize: 16, fontWeight: 700, color: "#2f855a" }}>
-                    ₦{Number(p.price).toLocaleString()}
-                  </div>
-                  <div style={{ marginTop: "auto" }}>
-                    <button
-                      onClick={() => handleAddToCart(p, 1)}
-                      style={{
-                        width: "100%",
-                        background: "#2f855a",
-                        color: "white",
-                        padding: "10px 12px",
-                        border: "none",
-                        borderRadius: 8,
-                        cursor: "pointer",
-                        fontWeight: 600,
-                      }}
-                      onMouseOver={(e) => (e.currentTarget.style.background = "#276749")}
-                      onMouseOut={(e) => (e.currentTarget.style.background = "#2f855a")}
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
+                <div className="product-card-body">
+                  <div className="product-name">{p.name}</div>
+                  <div className="product-category">{p.category || "General"}</div>
+                  <div className="product-price">₦{Number(p.price).toLocaleString()}</div>
+                </div>
+
+                <div className="product-card-footer">
+                  <button className="btn btn-primary full-width" onClick={() => handleAddToCart(p, 1)}>Add to Cart</button>
                 </div>
               </div>
             );
@@ -251,3 +179,4 @@ const API = "http://localhost:5001";
     </div>
   );
 }
+
