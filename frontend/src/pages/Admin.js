@@ -1,4 +1,4 @@
-import React, { useState,       console.log('Loading products...');seEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddProductModal from '../components/AddProductModal';
 import { apiFetch } from '../services/api';
 
