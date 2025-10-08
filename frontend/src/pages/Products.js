@@ -136,7 +136,7 @@ export default function Products() {
           <p>No products found matching your search.</p>
         </div>
       ) : (
-        <div className="products-grid">
+        <div className="products-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
           {filtered.map((p) => {
             const img = resolveImageUrl(p.image_url) || autoImageUrl(p.id, 600, 400);
             return (
@@ -148,7 +148,7 @@ export default function Products() {
                 <div className="product-card-body">
                   <div className="product-name">{p.name}</div>
                   <div className="product-category">{p.category || "General"}</div>
-                  <div className="product-price">₦{Number(p.price).toLocaleString()}</div>
+                  <div className="product-price">NGN {Number(p.price).toLocaleString()}</div>
                 </div>
 
                 <div className="product-card-footer">
