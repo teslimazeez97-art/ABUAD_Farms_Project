@@ -124,7 +124,7 @@ export default function Checkout() {
             marginBottom: 30 
           }}>
             <p style={{ fontSize: 20, fontWeight: "bold", margin: 0 }}>
-              Total Paid: ₦{finalTotal.toLocaleString()}
+              Total Paid: NGN {finalTotal.toLocaleString()}
             </p>
           </div>
 

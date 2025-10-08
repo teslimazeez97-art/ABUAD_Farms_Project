@@ -29,7 +29,7 @@ export default function Admin() {
     setError('');
     try {
       const data = await apiFetch('/api/products');
-      console.log('✅ Admin: Loaded', data.length, 'products');
+      console.log('Admin: Loaded', data.length, 'products');
       setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('❌ Admin: Load error:', err);

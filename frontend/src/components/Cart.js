@@ -50,9 +50,9 @@ export default function Cart() {
             <div key={item.id} style={{ marginBottom: 10, padding: 8, border: "1px solid #eee", borderRadius: 4 }}>
               <strong>{item.name}</strong>
               <br />
-              Qty: {item.quantity} × ₦{Number(item.price).toLocaleString()}
+              Qty: {item.quantity} × NGN {Number(item.price).toLocaleString()}
               <br />
-              <strong>₦{(item.price * item.quantity).toLocaleString()}</strong>
+              <strong>NGN {(item.price * item.quantity).toLocaleString()}</strong>
               <br />
               <button 
                 onClick={() => removeFromCart(item.id)} 
