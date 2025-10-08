@@ -155,7 +155,7 @@ export default function Admin() {
             borderRadius: 8,
             cursor: 'pointer'
           }}>
-            ?? Refresh
+            Refresh
           </button>
         </div>
       </div>
@@ -283,7 +283,7 @@ export default function Admin() {
                     <td style={{ padding: 12, fontWeight: 600 }}>{product.name}</td>
                     <td style={{ padding: 12 }}>{product.category || 'Uncategorized'}</td>
                     <td style={{ padding: 12, color: '#2f855a', fontWeight: 600 }}>
-                      ?{Number(product.price).toLocaleString()}
+                      NGN {Number(product.price).toLocaleString()}
                     </td>
                     <td style={{ padding: 12 }}>{product.stock_quantity || 0}</td>
                     <td style={{ padding: 12 }}>
@@ -299,7 +299,7 @@ export default function Admin() {
                           fontSize: 12
                         }}
                       >
-                        {product.is_featured ? '? Featured' : '? Feature'}
+                        {product.is_featured ? 'Featured' : 'Feature'}
                       </button>
                     </td>
                     <td style={{ padding: 12 }}>

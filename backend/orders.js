@@ -78,5 +78,72 @@ router.get("/orders", async (req, res) => {
     res.status(500).json({ success: false, error: "Failed to fetch orders" });
   }
 });
+router.put("/orders/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({ success: false, error: "Status is required" });
+    }
+
+    // Ensure status column exists
+    await pool.query(`
+      ALTER TABLE orders 
+      ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending'
+    `);
+
+    const result = await pool.query(
+      `UPDATE orders SET status = $1 WHERE id = $2 RETURNING *`,
+      [status, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, error: "Order not found" });
+    }
+
+    console.log(`✅ Order ${id} status updated to ${status}`);
+
+    res.json({ success: true, order: result.rows[0] });
+  } catch (error) {
+    console.error("❌ Failed to update order:", error);
+    res.status(500).json({ success: false, error: "Failed to update order" });
+  }
+});
+
+// GET /api/orders/:id - Get single order details
+router.get("/orders/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const orderResult = await pool.query(`
+      SELECT * FROM orders WHERE id = $1 OR order_number = $1
+    `, [id]);
+
+    if (orderResult.rows.length === 0) {
+      return res.status(404).json({ success: false, error: "Order not found" });
+    }
+
+    const order = orderResult.rows[0];
+
+    const itemsResult = await pool.query(`
+      SELECT oi.*, p.name as product_name, p.image_url
+      FROM order_items oi
+      JOIN products p ON oi.product_id = p.id
+      WHERE oi.order_id = $1
+    `, [order.id]);
+
+    res.json({
+      success: true,
+      order: {
+        ...order,
+        items: itemsResult.rows
+      }
+    });
+  } catch (error) {
+    console.error("❌ Failed to fetch order:", error);
+    res.status(500).json({ success: false, error: "Failed to fetch order" });
+  }
+});
 
 module.exports = router;

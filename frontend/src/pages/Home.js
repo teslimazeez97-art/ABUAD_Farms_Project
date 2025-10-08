@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { apiFetch } from "../services/api";
@@ -61,14 +61,16 @@ export default function Home() {
   }, []);
 
   // Derive categories dynamically from products - filter out test categories and select 6 random ones
-  const allCategories = Array.from(
-    new Set(allProducts.map(p => p.category || "Uncategorized"))
-  ).filter(cat => !cat.toLowerCase().includes('test') && !cat.toLowerCase().includes('qa'));
+  const categories = useMemo(() => {
+    const allCategories = Array.from(
+      new Set(allProducts.map(p => p.category || "Uncategorized"))
+    ).filter(cat => !cat.toLowerCase().includes('test') && !cat.toLowerCase().includes('qa'));
 
-  // Randomly select 6 categories
-  const categories = allCategories
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 6);
+    // Randomly select 6 categories
+    return allCategories
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 6);
+  }, [allProducts]);
 
   console.log('??? Home: Categories derived:', categories);
 
