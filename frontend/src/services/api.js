@@ -106,3 +106,10 @@ export const createOrder = (orderData) =>
 
 export const getOrders = () => apiFetch("/api/orders");
 export const getOrder = (orderNumber) => apiFetch(`/api/orders/${orderNumber}`);
+
+// Resolve image URL: if relative, prepend API_BASE; if absolute, return as is
+export const resolveImageUrl = (url) => {
+  if (!url) return null;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  return `${API_BASE}${url}`;
+};
