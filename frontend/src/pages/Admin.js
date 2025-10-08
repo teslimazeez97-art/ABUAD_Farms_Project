@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,       console.log('Loading products...');seEffect } from 'react';
 import AddProductModal from '../components/AddProductModal';
 import { apiFetch } from '../services/api';
 
@@ -24,7 +24,7 @@ export default function Admin() {
   }, []);
 
   const loadProducts = async () => {
-    console.log('🔄 Admin: Loading products...');
+    console.log('Loading products...');
     setLoading(true);
     setError('');
     try {

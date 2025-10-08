@@ -140,7 +140,7 @@ export default function Products() {
           {filtered.map((p) => {
             const img = resolveImageUrl(p.image_url) || autoImageUrl(p.id, 600, 400);
             return (
-              <div key={p.id} className="product-card">
+              <div key={p.id} className="product-card" style={{ border: '1px solid #e0e0e0', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', overflow: 'hidden', background: '#fff' }}>
                 <button aria-label={`Quick view ${p.name}`} onClick={() => setQuickViewProduct(p)} className="product-image-btn">
                   <img src={img} alt={p.name} style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px' }} onError={(e) => (e.currentTarget.src = autoImageUrl(p.id, 600, 400))} />
                 </button>
