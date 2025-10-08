@@ -45,7 +45,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
     } else {
       resetForm();
     }
-  }, [editingProduct]);
+  }, [editingProduct, existingCategories]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
