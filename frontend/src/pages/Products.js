@@ -142,7 +142,7 @@ export default function Products() {
             return (
               <div key={p.id} className="product-card">
                 <button aria-label={`Quick view ${p.name}`} onClick={() => setQuickViewProduct(p)} className="product-image-btn">
-                  <img src={img} alt={p.name} onError={(e) => (e.currentTarget.src = autoImageUrl(p.id, 600, 400))} />
+                  <img src={img} alt={p.name} style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px' }} onError={(e) => (e.currentTarget.src = autoImageUrl(p.id, 600, 400))} />
                 </button>
 
                 <div className="product-card-body">

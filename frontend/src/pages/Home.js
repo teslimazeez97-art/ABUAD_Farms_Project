@@ -111,7 +111,7 @@ export default function Home() {
       {/* Loading State */}
       {loading && (
         <div style={{ textAlign: 'center', padding: 40 }}>
-          <div style={{ fontSize: 30, marginBottom: 10 }}>🏠</div>
+          <div style={{ fontSize: 24, marginBottom: 10, fontWeight: 'bold' }}>Home</div>
           <p>Loading products...</p>
         </div>
       )}
@@ -187,7 +187,7 @@ export default function Home() {
                     e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
                   }}
                 >
-                  🌾 {cat}
+                  {cat}
                 </Link>
               ))}
             </div>
