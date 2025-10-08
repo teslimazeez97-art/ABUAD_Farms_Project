@@ -88,11 +88,6 @@ export default function Products() {
     <div className="product-list-wrapper">
       <h2 style={{ color: "var(--brand-green)" }}>Products</h2>
 
-      {/* Debug Info */}
-      <div style={{ background: "#f0f9ff", padding: 10, borderRadius: 8, marginBottom: 16, fontSize: 12 }}>
-        <strong>Debug:</strong> Products: {products.length} | Filtered: {filtered.length} | Loading: {loading ? 'Yes' : 'No'} | Error: {error || 'None'}
-      </div>
-
       <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
         <input
           placeholder="Search products..."
@@ -119,7 +114,7 @@ export default function Products() {
           onChange={(e) => setSort(e.target.value)}
           style={{ padding: 10, borderRadius: 8, border: "1px solid #d1d5db", minWidth: 220 }}
         >
-          <option value="">Filter</option>
+          <option value="">Sort by</option>
           <option value="price-asc">Price: Low → High</option>
           <option value="price-desc">Price: High → Low</option>
         </select>
@@ -138,8 +133,7 @@ export default function Products() {
         </div>
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: 40, background: '#f9fafb', borderRadius: 8 }}>
-          <p>No products found.</p>
-          {products.length === 0 && <p><small>Make sure your backend is running on port 5001</small></p>}
+          <p>No products found matching your search.</p>
         </div>
       ) : (
         <div className="products-grid">
