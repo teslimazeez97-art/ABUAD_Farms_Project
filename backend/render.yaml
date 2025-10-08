@@ -10,6 +10,6 @@ services:
       - key: PORT
         value: 10000
       - key: DATABASE_URL
-        fromSecret: database_url
+        value: postgresql://abuad_farms_db_user:b9WMIgL0uRpp5oEOcrLgHZqTIeZZb48L@dpg-d3at23umcj7s73ef05l0-a/abuad_farms_db
       - key: JWT_SECRET
-        fromSecret: jwt_secret
+        value: 8b7ab2189cd79197e57cd98ef6823c4c6c63d6e185781f1e0976baa039e569b318640881d70538e59002419c1c720f99

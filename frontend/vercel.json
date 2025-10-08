@@ -16,6 +16,6 @@
     }
   ],
   "env": {
-    "REACT_APP_API_URL": "https://abuad-farms-backend.onrender.com"
+    "REACT_APP_API_URL": "https://abuad-farms-project.onrender.com"
   }
 }
