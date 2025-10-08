@@ -339,7 +339,7 @@ app.put("/api/products/:id", async (req, res) => {
     const result = await pool.query(
       `UPDATE products 
        SET name = \$1, description = \$2, price = \$3, category = \$4, 
-           stock_quantity = \$5, is_featured = \$6, image_url = \$7, updated_at = NOW()
+           stock_quantity = \$5, is_featured = \$6, image_url = \$7
        WHERE id = \$8 
        RETURNING *`,
       [name, description, parseFloat(price), category, parseInt(stock_quantity) || 0, !!is_featured, image_url, id]
