@@ -86,7 +86,7 @@ export default function Products() {
 
   return (
     <div className="product-list-wrapper">
-      <h2 style={{ color: "var(--brand-green)" }}>Products</h2>
+      <h2 style={{ color: "var(--brand-green)", fontSize: "2rem", marginBottom: "20px", textAlign: "center" }}>Our Products</h2>
 
       <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
         <input
@@ -140,19 +140,15 @@ export default function Products() {
           {filtered.map((p) => {
             const img = resolveImageUrl(p.image_url) || autoImageUrl(p.id, 600, 400);
             return (
-              <div key={p.id} className="product-card" style={{ border: '1px solid #e0e0e0', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', overflow: 'hidden', background: '#fff' }}>
-                <button aria-label={`Quick view ${p.name}`} onClick={() => setQuickViewProduct(p)} className="product-image-btn">
-                  <img src={img} alt={p.name} style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px' }} onError={(e) => (e.currentTarget.src = autoImageUrl(p.id, 600, 400))} />
-                </button>
+              <div key={p.id} className="product-card" style={{ border: '1px solid #e0e0e0', borderRadius: '8px', overflow: 'hidden', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', cursor: 'pointer' }} onClick={() => setQuickViewProduct(p)}>
+                <img src={img} alt={p.name} style={{ width: '100%', height: '150px', objectFit: 'cover' }} onError={(e) => (e.currentTarget.src = autoImageUrl(p.id, 600, 400))} />
 
-                <div className="product-card-body">
-                  <div className="product-name">{p.name}</div>
-                  <div className="product-category">{p.category || "General"}</div>
-                  <div className="product-price">NGN {Number(p.price).toLocaleString()}</div>
-                </div>
-
-                <div className="product-card-footer">
-                  <button className="btn btn-primary full-width" onClick={() => handleAddToCart(p, 1)}>Add to Cart</button>
+                <div className="product-card-body" style={{ padding: '12px' }}>
+                  <h4 style={{ fontSize: 15, margin: "4px 0" }}>{p.name}</h4>
+                  <p style={{ margin: "4px 0", fontSize: 13, color: "#555" }}>
+                    NGN {Number(p.price).toLocaleString()}
+                  </p>
+                  <button className="btn btn-primary" style={{ width: '100%', marginTop: '8px' }} onClick={(e) => { e.stopPropagation(); handleAddToCart(p, 1); }}>Add to Cart</button>
                 </div>
               </div>
             );
