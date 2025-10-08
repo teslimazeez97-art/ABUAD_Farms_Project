@@ -72,7 +72,10 @@ export default function Home() {
       .slice(0, 6);
   }, [allProducts]);
 
-  console.log('??? Home: Categories derived:', categories);
+  // Only log when categories actually change
+  useEffect(() => {
+    console.log('??? Home: Categories derived:', categories);
+  }, [categories]);
 
   return (
     <div>
@@ -105,7 +108,7 @@ export default function Home() {
               fontWeight: 700
             }}
           >
-            Shop Products ?
+            Shop Products
           </Link>
         </div>
       </section>
@@ -203,7 +206,7 @@ export default function Home() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
             <h2 style={{ margin: 0, color: "#2f855a", fontSize: 28 }}>Featured Products</h2>
             <Link to="/products" style={{ color: "#276749", textDecoration: "none", fontWeight: 600 }}>
-              View all ?
+              View all
             </Link>
           </div>
           <div
@@ -298,7 +301,7 @@ export default function Home() {
                   <div style={{ padding: 12 }}>
                     <h3 style={{ margin: "0 0 6px 0", fontSize: 16 }}>{p.name}</h3>
                     <div style={{ color: "#2f855a", fontWeight: 700 }}>
-                      ?{Number(p.price).toLocaleString()}
+                      NGN {Number(p.price).toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -344,7 +347,7 @@ export default function Home() {
                 onClick={() => setQuickViewProduct(null)}
                 style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#666" }}
               >
-                ?
+                ×
               </button>
             </div>
 
@@ -359,7 +362,7 @@ export default function Home() {
               />
               <h2 style={{ margin: "8px 0", fontSize: 22 }}>{quickViewProduct.name}</h2>
               <div style={{ color: "#2f855a", fontWeight: 700, fontSize: 18, marginBottom: 10 }}>
-                ?{Number(quickViewProduct.price).toLocaleString()}
+                NGN {Number(quickViewProduct.price).toLocaleString()}
               </div>
               <p style={{ color: "#4b5563", lineHeight: 1.5 }}>
                 {quickViewProduct.description || "No description available."}
@@ -383,7 +386,7 @@ export default function Home() {
                     fontWeight: 700
                   }}
                 >
-                  ? Add to Cart
+                  Add to Cart
                 </button>
                 <button
                   onClick={() => setQuickViewProduct(null)}

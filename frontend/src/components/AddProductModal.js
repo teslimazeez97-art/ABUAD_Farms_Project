@@ -70,10 +70,12 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          category: finalCategory,
+          name: formData.name,
+          description: formData.description,
           price: parseFloat(formData.price),
+          category: finalCategory,
           stock_quantity: parseInt(formData.stock_quantity) || 0,
+          is_featured: formData.featured,
           image_url: finalImageUrl || `https://picsum.photos/seed/abuad-${Date.now()}/600/400`
         })
       });
