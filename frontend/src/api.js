@@ -324,7 +324,7 @@ export const apiUtils = {
 };
 
 // Export everything as default for easy importing
-export default {
+const api = {
   apiFetch,
   auth: authAPI,
   products: productsAPI,
@@ -336,3 +336,5 @@ export default {
   upload: uploadAPI,
   utils: apiUtils
 };
+
+export default api;

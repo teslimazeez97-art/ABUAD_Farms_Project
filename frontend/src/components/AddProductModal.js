@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 const API = "http://localhost:5001";
 
+// Existing categories from database
+const existingCategories = [
+  'Crops', 'Fruits', 'Grains', 'Honey', 'Legumes', 'Livestock', 'Meat', 'Moringa',
+  'Mushroom', 'Oils', 'Poultry', 'Processed', 'Snails', 'Spices', 'Tubers', 'Vegetables'
+];
+
 export default function AddProductModal({ isOpen, onClose, onProductAdded, editingProduct, onProductUpdated }) {
   const [formData, setFormData] = useState({
     name: '',
@@ -18,12 +24,6 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
   const [showCustomCategory, setShowCustomCategory] = useState(false);
   const [imageType, setImageType] = useState('url'); // 'url' or 'upload'
   const [imageFile, setImageFile] = useState(null);
-
-  // Existing categories from database
-  const existingCategories = [
-    'Crops', 'Fruits', 'Grains', 'Honey', 'Legumes', 'Livestock', 'Meat', 'Moringa',
-    'Mushroom', 'Oils', 'Poultry', 'Processed', 'Snails', 'Spices', 'Tubers', 'Vegetables'
-  ];
 
   // Update form data when editing product changes
   useEffect(() => {

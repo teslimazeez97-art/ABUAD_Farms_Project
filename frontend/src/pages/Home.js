@@ -1,9 +1,9 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
-// ✅ FIXED: Changed from port 5000 to 5001
+// ? FIXED: Changed from port 5000 to 5001
 const API = "http://localhost:5001";
 export default function Home() {
   const [featured, setFeatured] = useState([]);
@@ -25,28 +25,28 @@ export default function Home() {
 
   useEffect(() => {
     async function load() {
-      console.log('🏠 Home: Starting to fetch data...');
+      console.log('?? Home: Starting to fetch data...');
       setLoading(true);
       setError("");
       
       try {
-        console.log('🌟 Home: Fetching featured products from:', `${API}/api/products/featured`);
-        console.log('📊 Home: Fetching all products from:', `${API}/api/products`);
+        console.log('?? Home: Fetching featured products from:', `${API}/api/products/featured`);
+        console.log('?? Home: Fetching all products from:', `${API}/api/products`);
         
         const [featRes, prodRes] = await Promise.all([
           axios.get(`${API}/api/products/featured`),
           axios.get(`${API}/api/products`)
         ]);
         
-        console.log('✅ Home: Featured products response:', featRes.status, featRes.data.length, 'products');
-        console.log('✅ Home: All products response:', prodRes.status, prodRes.data.length, 'products');
-        console.log('📦 Home: Sample featured product:', featRes.data[0]);
+        console.log('? Home: Featured products response:', featRes.status, featRes.data.length, 'products');
+        console.log('? Home: All products response:', prodRes.status, prodRes.data.length, 'products');
+        console.log('?? Home: Sample featured product:', featRes.data[0]);
         
         setFeatured(Array.isArray(featRes.data) ? featRes.data : []);
         setAllProducts(Array.isArray(prodRes.data) ? prodRes.data : []);
       } catch (e) {
-        console.error("❌ Home: Load error:", e.message);
-        console.error("❌ Home: Full error:", e);
+        console.error("? Home: Load error:", e.message);
+        console.error("? Home: Full error:", e);
         setError(`Failed to load data: ${e.message}`);
       } finally {
         setLoading(false);
@@ -73,7 +73,7 @@ export default function Home() {
     .sort(() => Math.random() - 0.5)
     .slice(0, 6);
 
-  console.log('🏷️ Home: Categories derived:', categories);
+  console.log('??? Home: Categories derived:', categories);
 
   return (
     <div>
@@ -97,7 +97,7 @@ export default function Home() {
           Welcome to ABUAD Farms
         </h1>
         <p style={{ marginTop: 10, opacity: 0.95, fontSize: isMobile ? 14 : 16 }}>
-          Fresh produce, livestock, and farm goods — straight from our fields to your table.
+          Fresh produce, livestock, and farm goods � straight from our fields to your table.
         </p>
         <div style={{ marginTop: 16 }}>
           <Link
@@ -111,7 +111,7 @@ export default function Home() {
               fontWeight: 700
             }}
           >
-            Shop Products →
+            Shop Products ?
           </Link>
         </div>
       </section>
@@ -119,7 +119,7 @@ export default function Home() {
       {/* Loading State */}
       {loading && (
         <div style={{ textAlign: 'center', padding: 40 }}>
-          <div style={{ fontSize: 30, marginBottom: 10 }}>🔄</div>
+          <div style={{ fontSize: 30, marginBottom: 10 }}>??</div>
           <p>Loading products...</p>
         </div>
       )}
@@ -195,7 +195,7 @@ export default function Home() {
                     e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
                   }}
                 >
-                  🌱 {cat}
+                  ?? {cat}
                 </Link>
               ))}
             </div>
@@ -209,7 +209,7 @@ export default function Home() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
             <h2 style={{ margin: 0, color: "#2f855a", fontSize: 28 }}>Featured Products</h2>
             <Link to="/products" style={{ color: "#276749", textDecoration: "none", fontWeight: 600 }}>
-              View all →
+              View all ?
             </Link>
           </div>
           <div
@@ -304,7 +304,7 @@ export default function Home() {
                   <div style={{ padding: 12 }}>
                     <h3 style={{ margin: "0 0 6px 0", fontSize: 16 }}>{p.name}</h3>
                     <div style={{ color: "#2f855a", fontWeight: 700 }}>
-                      ₦{Number(p.price).toLocaleString()}
+                      ?{Number(p.price).toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -350,7 +350,7 @@ export default function Home() {
                 onClick={() => setQuickViewProduct(null)}
                 style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#666" }}
               >
-                ✕
+                ?
               </button>
             </div>
 
@@ -365,7 +365,7 @@ export default function Home() {
               />
               <h2 style={{ margin: "8px 0", fontSize: 22 }}>{quickViewProduct.name}</h2>
               <div style={{ color: "#2f855a", fontWeight: 700, fontSize: 18, marginBottom: 10 }}>
-                ₦{Number(quickViewProduct.price).toLocaleString()}
+                ?{Number(quickViewProduct.price).toLocaleString()}
               </div>
               <p style={{ color: "#4b5563", lineHeight: 1.5 }}>
                 {quickViewProduct.description || "No description available."}
@@ -374,7 +374,7 @@ export default function Home() {
               <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
                 <button
                   onClick={() => {
-                    console.log('🛒 Home: Adding to cart from quick view:', quickViewProduct.name);
+                    console.log('?? Home: Adding to cart from quick view:', quickViewProduct.name);
                     addToCart(quickViewProduct);
                     setQuickViewProduct(null);
                   }}
@@ -389,7 +389,7 @@ export default function Home() {
                     fontWeight: 700
                   }}
                 >
-                  ➕ Add to Cart
+                  ? Add to Cart
                 </button>
                 <button
                   onClick={() => setQuickViewProduct(null)}

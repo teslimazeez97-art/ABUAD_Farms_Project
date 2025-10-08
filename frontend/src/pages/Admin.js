@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddProductModal from '../components/AddProductModal';
 
 const API = "http://localhost:5001";
@@ -11,26 +11,8 @@ export default function Admin() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    category: '',
-    stock_quantity: '',
-    is_featured: false,
-    image_url: ''
-  });
 
   const resetForm = () => {
-    setFormData({
-      name: '',
-      description: '',
-      price: '',
-      category: '',
-      stock_quantity: '',
-      is_featured: false,
-      image_url: ''
-    });
     setError('');
   };
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -43,17 +25,17 @@ export default function Admin() {
   }, []);
 
   const loadProducts = async () => {
-    console.log('ðŸ”„ Admin: Loading products...');
+    console.log('🔄 Admin: Loading products...');
     setLoading(true);
     setError('');
     try {
       const response = await fetch(`${API}/api/products`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      console.log('âœ… Admin: Loaded', data.length, 'products');
+      console.log('✅ Admin: Loaded', data.length, 'products');
       setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error('âŒ Admin: Load error:', err);
+      console.error('❌ Admin: Load error:', err);
       setError(`Failed to load products: ${err.message}`);
     } finally {
       setLoading(false);
@@ -64,7 +46,7 @@ export default function Admin() {
   const handleDeleteProduct = async (productId) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     
-    console.log('ðŸ—‘ï¸ Admin: Deleting product:', productId);
+    console.log('🗑️ Admin: Deleting product:', productId);
     try {
       const response = await fetch(`${API}/api/products/${productId}`, {
         method: 'DELETE'
@@ -72,10 +54,10 @@ export default function Admin() {
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       
-      console.log('âœ… Admin: Product deleted successfully');
+      console.log('✅ Admin: Product deleted successfully');
       loadProducts();
     } catch (err) {
-      console.error('âŒ Admin: Delete error:', err);
+      console.error('❌ Admin: Delete error:', err);
       setError(`Failed to delete product: ${err.message}`);
     }
   };
@@ -85,25 +67,25 @@ export default function Admin() {
     if (selectedProducts.length === 0) return;
     if (!window.confirm(`Delete ${selectedProducts.length} selected products?`)) return;
 
-    console.log('ðŸ—‘ï¸ Admin: Bulk deleting', selectedProducts.length, 'products');
+    console.log('🗑️ Admin: Bulk deleting', selectedProducts.length, 'products');
     try {
       await Promise.all(
         selectedProducts.map(id => 
           fetch(`${API}/api/products/${id}`, { method: 'DELETE' })
         )
       );
-      console.log('âœ… Admin: Bulk delete completed');
+      console.log('✅ Admin: Bulk delete completed');
       setSelectedProducts([]);
       loadProducts();
     } catch (err) {
-      console.error('âŒ Admin: Bulk delete error:', err);
+      console.error('❌ Admin: Bulk delete error:', err);
       setError(`Failed to delete products: ${err.message}`);
     }
   };
 
   // Toggle featured status
   const toggleFeatured = async (product) => {
-    console.log('â­ Admin: Toggling featured for:', product.name);
+    console.log('⭐ Admin: Toggling featured for:', product.name);
     try {
       const response = await fetch(`${API}/api/products/${product.id}`, {
         method: 'PUT',
@@ -116,24 +98,15 @@ export default function Admin() {
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       
-      console.log('âœ… Admin: Featured status updated');
+      console.log('✅ Admin: Featured status updated');
       loadProducts();
     } catch (err) {
-      console.error('âŒ Admin: Featured toggle error:', err);
+      console.error('❌ Admin: Featured toggle error:', err);
       setError(`Failed to update featured status: ${err.message}`);
     }
   };
 
   const startEdit = (product) => {
-    setFormData({
-      name: product.name || '',
-      description: product.description || '',
-      price: product.price || '',
-      category: product.category || '',
-      stock_quantity: product.stock_quantity || '',
-      is_featured: product.is_featured || false,
-      image_url: product.image_url || ''
-    });
     setEditingProduct(product);
   };
 
@@ -191,7 +164,7 @@ export default function Admin() {
             borderRadius: 8,
             cursor: 'pointer'
           }}>
-            🔄 Refresh
+            ?? Refresh
           </button>
         </div>
       </div>
@@ -205,7 +178,7 @@ export default function Admin() {
       {error && (
         <div style={{ background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: 8, padding: 16, color: '#dc2626', marginBottom: 20 }}>
           <strong>Error:</strong> {error}
-          <button onClick={() => setError('')} style={{ float: 'right', background: 'none', border: 'none', cursor: 'pointer' }}>âœ•</button>
+          <button onClick={() => setError('')} style={{ float: 'right', background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
         </div>
       )}
 
@@ -264,7 +237,7 @@ export default function Admin() {
       {/* Products Table */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: 40 }}>
-          <div style={{ fontSize: 30, marginBottom: 10 }}>ðŸ”„</div>
+          <div style={{ fontSize: 30, marginBottom: 10 }}>🔄</div>
           <p>Loading products...</p>
         </div>
       ) : (
@@ -324,7 +297,7 @@ export default function Admin() {
                     <td style={{ padding: 12, fontWeight: 600 }}>{product.name}</td>
                     <td style={{ padding: 12 }}>{product.category || 'Uncategorized'}</td>
                     <td style={{ padding: 12, color: '#2f855a', fontWeight: 600 }}>
-                      ₦{Number(product.price).toLocaleString()}
+                      ?{Number(product.price).toLocaleString()}
                     </td>
                     <td style={{ padding: 12 }}>{product.stock_quantity || 0}</td>
                     <td style={{ padding: 12 }}>
@@ -340,7 +313,7 @@ export default function Admin() {
                           fontSize: 12
                         }}
                       >
-                        {product.is_featured ? '⭐ Featured' : '☆ Feature'}
+                        {product.is_featured ? '? Featured' : '? Feature'}
                       </button>
                     </td>
                     <td style={{ padding: 12 }}>
@@ -421,4 +394,5 @@ export default function Admin() {
     </React.Fragment>
   );
 }
+
 
