@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { apiFetch } from '../api';
+import { apiFetch } from '../services/api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
