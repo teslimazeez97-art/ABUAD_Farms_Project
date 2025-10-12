@@ -68,8 +68,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
 
       await apiFetch(endpoint, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           name: formData.name,
           description: formData.description,
           price: parseFloat(formData.price),
@@ -77,7 +76,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
           stock_quantity: parseInt(formData.stock_quantity) || 0,
           is_featured: formData.featured,
           image_url: finalImageUrl || `https://picsum.photos/seed/abuad-${Date.now()}/600/400`
-        })
+        }
       });
 
       console.log(`✅ Product ${isEditing ? 'updated' : 'added'} successfully`);
