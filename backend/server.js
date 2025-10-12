@@ -66,6 +66,18 @@ function adminMiddleware(req, res, next) {
 try {
   const client = await pool.connect();
   console.log("✅ Database connected successfully");
+
+  // Ensure stock_quantity column exists in products table
+  try {
+    await client.query(`
+      ALTER TABLE products
+      ADD COLUMN IF NOT EXISTS stock_quantity INTEGER DEFAULT 0
+    `);
+    console.log("✅ Ensured stock_quantity column exists");
+  } catch (columnErr) {
+    console.log("⚠️  Column check completed (may already exist):", columnErr.message);
+  }
+
   client.release();
 } catch (err) {
   console.error("❌ Database connection failed:", err?.message || err);
