@@ -23,6 +23,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
   const [showCustomCategory, setShowCustomCategory] = useState(false);
   const [imageType, setImageType] = useState('url'); // 'url' or 'upload'
   const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(''); // For displaying preview
 
   // Update form data when editing product changes
   useEffect(() => {
@@ -41,10 +42,24 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
       });
       setCustomCategory(isCustom ? category : '');
       setShowCustomCategory(isCustom);
+      setImagePreview(editingProduct.image_url || '');
     } else {
       resetForm();
     }
   }, [editingProduct, existingCategories]);
+
+  // Handle image preview updates
+  useEffect(() => {
+    if (imageType === 'url' && formData.image_url) {
+      setImagePreview(formData.image_url);
+    } else if (imageType === 'upload' && imageFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => setImagePreview(e.target.result);
+      reader.readAsDataURL(imageFile);
+    } else {
+      setImagePreview('');
+    }
+  }, [formData.image_url, imageFile, imageType]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,6 +124,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
     setShowCustomCategory(false);
     setImageType('url');
     setImageFile(null);
+    setImagePreview('');
     setError('');
   };
 
@@ -240,7 +256,13 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
                 <input
                   type="url"
                   value={formData.image_url}
-                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                  onChange={(e) => {
+                    setFormData({...formData, image_url: e.target.value});
+                    // Clear file when URL is entered
+                    if (e.target.value) {
+                      setImageFile(null);
+                    }
+                  }}
                   placeholder="https://example.com/image.jpg"
                   style={{ width: '100%', padding: 10, border: '2px solid #e5e7eb', borderRadius: 8, fontSize: '1rem' }}
                 />
@@ -248,7 +270,14 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setImageFile(e.target.files[0])}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setImageFile(file);
+                    // Clear URL when file is selected
+                    if (file) {
+                      setFormData({...formData, image_url: ''});
+                    }
+                  }}
                   style={{ width: '100%', padding: 8, border: '2px solid #e5e7eb', borderRadius: 8, fontSize: '1rem' }}
                 />
               )}
@@ -265,6 +294,45 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
               </label>
             </div>
           </div>
+
+          {/* Image Preview */}
+          {imagePreview && (
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: 'block', marginBottom: 8, fontWeight: '600', color: '#374151' }}>Image Preview</label>
+              <div style={{ 
+                border: '2px solid #e5e7eb', 
+                borderRadius: 8, 
+                padding: 8, 
+                display: 'inline-block',
+                background: '#f9fafb'
+              }}>
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{ 
+                    maxWidth: '200px', 
+                    maxHeight: '150px', 
+                    objectFit: 'contain',
+                    borderRadius: 4,
+                    display: 'block'
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+                <div style={{ 
+                  display: 'none', 
+                  color: '#6b7280', 
+                  fontSize: '0.875rem', 
+                  textAlign: 'center',
+                  padding: '20px'
+                }}>
+                  Failed to load image
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', paddingTop: 16, borderTop: '1px solid #e5e7eb' }}>
