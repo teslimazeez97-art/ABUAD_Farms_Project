@@ -25,6 +25,7 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    'http://localhost:3001',
     'http://localhost:3003',
     'https://abuad-farms-project.vercel.app',
     'https://abuad-farms-project-*.vercel.app',
@@ -360,14 +361,25 @@ app.put("/api/products/:id", async (req, res) => {
       return res.status(400).json({ error: 'Invalid price format' });
     }
 
+    // If image_url is not provided, preserve the existing one
+    let finalImageUrl = image_url;
+    if (image_url === undefined || image_url === null) {
+      const existingProduct = await pool.query('SELECT image_url FROM products WHERE id = $1', [id]);
+      if (existingProduct.rows.length > 0) {
+        finalImageUrl = existingProduct.rows[0].image_url;
+      }
+    }
+
     const result = await pool.query(
       `UPDATE products 
        SET name = \$1, description = \$2, price = \$3, category = \$4, 
            stock_quantity = \$5, featured = \$6, image_url = \$7
        WHERE id = \$8 
        RETURNING *`,
-      [name, description, parseFloat(price), category, parseInt(stock_quantity) || 0, !!is_featured, image_url, id]
-    );    if (result.rows.length === 0) {
+      [name, description, parseFloat(price), category, parseInt(stock_quantity) || 0, !!is_featured, finalImageUrl, id]
+    );
+
+    if (result.rows.length === 0) {
       console.log('❌ API: Product not found:', id);
       return res.status(404).json({ error: 'Product not found' });
     }

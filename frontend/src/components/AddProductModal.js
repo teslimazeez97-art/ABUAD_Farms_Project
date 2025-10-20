@@ -77,8 +77,39 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
       // Handle image URL
       let finalImageUrl = formData.image_url;
       if (imageType === 'upload' && imageFile) {
-        // For now, we'll use a placeholder. In a real app, you'd upload the file to a server
-        finalImageUrl = `https://picsum.photos/seed/abuad-${Date.now()}/600/400`;
+        // Upload the file to the server
+        const API_BASE = process.env.REACT_APP_API_URL ||
+          (window.location.hostname === 'localhost' ? 'http://localhost:5001' : 'https://abuad-farms-project.onrender.com');
+
+        const formDataUpload = new FormData();
+        formDataUpload.append('image', imageFile);
+
+        const uploadResponse = await fetch(`${API_BASE}/api/products/upload`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: formDataUpload
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload image');
+        }
+
+        const uploadData = await uploadResponse.json();
+        finalImageUrl = uploadData.url;
+      }
+
+      // For editing: preserve existing image if no new image is provided,
+      // but allow clearing the image by setting it to empty string
+      if (isEditing) {
+        if (imageType === 'url' && formData.image_url === '') {
+          // User explicitly cleared the URL field - allow removing image
+          finalImageUrl = '';
+        } else if (!finalImageUrl) {
+          // No new image provided - preserve existing
+          finalImageUrl = editingProduct.image_url;
+        }
       }
 
       await apiFetch(endpoint, {
@@ -90,7 +121,7 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded, editi
           category: finalCategory,
           stock_quantity: parseInt(formData.stock_quantity) || 0,
           is_featured: formData.featured,
-          image_url: finalImageUrl || `https://picsum.photos/seed/abuad-${Date.now()}/600/400`
+          image_url: finalImageUrl || (isEditing ? '' : `https://picsum.photos/seed/abuad-${Date.now()}/600/400`)
         }
       });
 
