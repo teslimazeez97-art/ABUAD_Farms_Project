@@ -8,8 +8,8 @@
     "dev": "nodemon server.js",
     "start": "npm run migrate && node seed-handbook-products.js && node server.js",
     "build": "echo 'No build step required'",
-    "migrate": "npx node-pg-migrate up",
-    "migrate:down": "npx node-pg-migrate down"
+    "migrate": "node ./node_modules/node-pg-migrate/bin/node-pg-migrate.js up",
+    "migrate:down": "node ./node_modules/node-pg-migrate/bin/node-pg-migrate.js down"
   },
   "keywords": [],
   "author": "",
