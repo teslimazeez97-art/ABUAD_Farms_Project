@@ -1,6 +1,6 @@
 // backend/migrations/002_seed_admin.js
 exports.up = async (pgm) => {
-  const bcrypt = require("bcrypt");
+  const bcrypt = require("bcryptjs");
   const hashed = await bcrypt.hash("password", 10);
 
   pgm.sql(`

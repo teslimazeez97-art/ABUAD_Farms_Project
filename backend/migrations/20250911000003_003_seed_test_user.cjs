@@ -1,6 +1,6 @@
 // backend/migrations/20250911000003_003_seed_test_user.cjs
 exports.up = async (pgm) => {
-  const bcrypt = require("bcrypt");
+  const bcrypt = require("bcryptjs");
   const hashed = await bcrypt.hash("secret123", 10);
 
   pgm.sql(`
